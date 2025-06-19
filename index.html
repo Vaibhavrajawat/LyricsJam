@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JamLyrics - Song Management</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="logo">
+          <i class="fas fa-music"></i>
+          <h1>JamLyrics</h1>
+        </div>
+        <nav class="nav">
+          <a href="add.html" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Song
+          </a>
+          <a href="remove.html" class="btn btn-secondary">
+            <i class="fas fa-trash"></i> Manage Songs
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <div class="search-section">
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search songs by title or artist..."
+            />
+            <button id="clearSearch" class="clear-btn">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="songs-section">
+          <div class="section-header">
+            <h2>Available Songs</h2>
+            <span id="songCount" class="song-count">0 songs</span>
+          </div>
+
+          <div id="songsGrid" class="songs-grid">
+            <div class="empty-state">
+              <i class="fas fa-music"></i>
+              <h3>No songs available</h3>
+              <p>Songs will appear here when they're added by the organizer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Lyrics Modal -->
+    <div id="lyricsModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalSongTitle"></h3>
+          <button id="closeModal" class="close-btn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="song-info">
+            <p id="modalArtist"></p>
+          </div>
+          <div class="lyrics-content">
+            <pre id="modalLyrics"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

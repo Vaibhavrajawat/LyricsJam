@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Remove Songs - JamLyrics</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">
+            <i class="fas fa-music"></i>
+            <h1>JamLyrics</h1>
+          </a>
+        </div>
+        <nav class="nav">
+          <a href="add.html" class="btn btn-secondary">
+            <i class="fas fa-plus"></i> Add Song
+          </a>
+          <a href="index.html" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> Back to Songs
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <div class="form-section remove-section">
+          <div class="form-header">
+            <h2>Remove Songs</h2>
+            <p>
+              Manage your song collection - delete songs that are no longer
+              needed
+            </p>
+          </div>
+
+          <div class="admin-controls">
+            <div class="search-bar admin-search">
+              <i class="fas fa-search"></i>
+              <input
+                type="text"
+                id="adminSearchInput"
+                placeholder="Search songs to remove..."
+              />
+              <button id="clearAdminSearch" class="clear-btn">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div class="bulk-actions">
+              <button id="selectAllBtn" class="btn btn-secondary">
+                <i class="fas fa-check-square"></i> Select All
+              </button>
+              <button id="deleteSelectedBtn" class="btn btn-danger" disabled>
+                <i class="fas fa-trash"></i> Delete Selected (<span
+                  id="selectedCount"
+                  >0</span
+                >)
+              </button>
+            </div>
+          </div>
+
+          <div class="songs-management">
+            <div class="management-header">
+              <h3 id="songsCountDisplay">Loading songs...</h3>
+            </div>
+
+            <div id="managementGrid" class="management-grid">
+              <div class="loading-placeholder">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading songs...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+      <div class="modal-content confirm-modal">
+        <div class="modal-header">
+          <h3 id="confirmTitle">Confirm Deletion</h3>
+          <button id="closeConfirmModal" class="close-btn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="confirm-message">
+            <i class="fas fa-exclamation-triangle warning-icon"></i>
+            <p id="confirmMessage">
+              Are you sure you want to delete this song?
+            </p>
+            <p class="warning-text">This action cannot be undone.</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelDelete" class="btn btn-outline">Cancel</button>
+          <button id="confirmDelete" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="message-container"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Processing...</p>
+    </div>
+
+    <script src="remove-script.js"></script>
+  </body>
+</html>

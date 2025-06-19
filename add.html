@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Song - JamLyrics</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">
+            <i class="fas fa-music"></i>
+            <h1>JamLyrics</h1>
+          </a>
+        </div>
+        <nav class="nav">
+          <a href="remove.html" class="btn btn-secondary">
+            <i class="fas fa-trash"></i> Manage Songs
+          </a>
+          <a href="index.html" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> Back to Songs
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <div class="form-section">
+          <div class="form-header">
+            <h2 id="formTitle">Add New Song</h2>
+            <p>
+              Fill in the details below or use auto-fetch to get lyrics
+              automatically
+            </p>
+          </div>
+
+          <form id="songForm" class="song-form">
+            <div class="form-group">
+              <label for="songTitle">Song Title *</label>
+              <input type="text" id="songTitle" name="title" required />
+              <span class="error-message" id="titleError"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="artistName">Artist *</label>
+              <input type="text" id="artistName" name="artist" required />
+              <span class="error-message" id="artistError"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="albumName">Album</label>
+              <input type="text" id="albumName" name="album" />
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="autoFetchBtn" class="btn btn-secondary">
+                <i class="fas fa-download"></i> Auto-Fetch Lyrics
+              </button>
+              <button type="button" id="clearFormBtn" class="btn btn-outline">
+                <i class="fas fa-eraser"></i> Clear Form
+              </button>
+            </div>
+
+            <div class="form-group">
+              <label for="songLyrics">Lyrics *</label>
+              <textarea
+                id="songLyrics"
+                name="lyrics"
+                rows="15"
+                placeholder="Enter song lyrics here..."
+                required
+              ></textarea>
+              <span class="error-message" id="lyricsError"></span>
+            </div>
+
+            <div class="form-submit">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                <span id="submitText">Save Song</span>
+              </button>
+              <a href="index.html" class="btn btn-outline"> Cancel </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="message-container"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Fetching lyrics...</p>
+    </div>
+
+    <script src="add-script.js"></script>
+  </body>
+</html>
