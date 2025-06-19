@@ -919,3 +919,298 @@ body::before {
     padding: 0.875rem 1.5rem;
   }
 }
+
+/* Remove Page Specific Styles */
+.remove-section {
+  max-width: 1200px;
+}
+
+.admin-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-search {
+  max-width: 500px;
+  margin: 0;
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.bulk-actions .btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.bulk-actions .btn[disabled]:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.songs-management {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  border: 1px solid var(--border-glass);
+}
+
+.management-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.management-header h3 {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.management-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.management-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+  position: relative;
+}
+
+.management-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.checkbox-container {
+  position: relative;
+}
+
+.song-checkbox {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.song-checkbox:checked {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.song-checkbox:checked::after {
+  content: "✓";
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.song-checkbox:hover {
+  border-color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.checkbox-label {
+  cursor: pointer;
+}
+
+.delete-single-btn {
+  background: var(--danger-gradient);
+  border: none;
+  color: white;
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.delete-single-btn:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow);
+}
+
+.card-content h4 {
+  color: var(--text-on-card);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.card-content .artist {
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.card-content .album {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.card-content .lyrics-preview {
+  background: var(--bg-glass);
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  color: #64748b;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.song-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.created-date {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.created-date i {
+  font-size: 0.625rem;
+}
+
+.loading-placeholder {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: #ffffff;
+}
+
+.loading-placeholder i {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+.loading-placeholder p {
+  font-size: 1.125rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Confirmation Modal Styles */
+.confirm-modal .modal-header {
+  background: var(--danger-gradient);
+}
+
+.confirm-message {
+  text-align: center;
+  padding: 1rem;
+}
+
+.warning-icon {
+  font-size: 3rem;
+  color: var(--warning-color);
+  margin-bottom: 1rem;
+}
+
+.confirm-message p {
+  color: var(--text-on-card);
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.warning-text {
+  color: #ef4444;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Responsive Design for Remove Page */
+@media (max-width: 768px) {
+  .remove-section {
+    margin: 0 1rem;
+    padding: 2rem;
+  }
+
+  .admin-controls {
+    gap: 1rem;
+  }
+
+  .bulk-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .management-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .songs-management {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .remove-section {
+    margin: 0 0.5rem;
+    padding: 1.5rem;
+  }
+
+  .management-card {
+    padding: 1rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .checkbox-container {
+    align-self: flex-start;
+  }
+
+  .bulk-actions .btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+}
