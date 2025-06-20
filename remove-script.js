@@ -286,27 +286,41 @@ class RemoveSongsManager {
     const modal = document.getElementById("confirmModal");
     modal.classList.remove("active");
     document.body.style.overflow = "";
-    this.currentDeletingSongs = [];
   }
 
   async executeDelete() {
+    console.log("Execute delete called with songs:", this.currentDeletingSongs);
+
     this.showLoading(true);
-    this.closeConfirmModal();
+
+    // Store count and IDs before any async operations
+    const deleteCount = this.currentDeletingSongs.length;
+    const songIds = this.currentDeletingSongs.map((song) => song.id);
+
+    console.log(`Deleting ${deleteCount} songs with IDs:`, songIds);
+
+    if (deleteCount === 0) {
+      console.error("No songs to delete!");
+      this.showMessage("No songs selected for deletion", "error");
+      this.showLoading(false);
+      this.closeConfirmModal();
+      return;
+    }
 
     try {
-      const { error } = await supabase
+      const { error, data } = await supabase
         .from("songs")
         .delete()
-        .in(
-          "id",
-          this.currentDeletingSongs.map((song) => song.id)
-        );
+        .in("id", songIds);
 
       if (error) throw error;
 
-      const count = this.currentDeletingSongs.length;
+      console.log("Delete successful, affected rows:", data);
+
       this.showMessage(
-        `Successfully deleted ${count} song${count !== 1 ? "s" : ""}`,
+        `Successfully deleted ${deleteCount} song${
+          deleteCount !== 1 ? "s" : ""
+        }`,
         "success"
       );
 
@@ -320,6 +334,7 @@ class RemoveSongsManager {
     } finally {
       this.showLoading(false);
       this.currentDeletingSongs = [];
+      this.closeConfirmModal();
     }
   }
 
