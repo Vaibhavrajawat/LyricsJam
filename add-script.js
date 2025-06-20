@@ -3,12 +3,21 @@ class AddSongManager {
   constructor() {
     this.isEditing = false;
     this.editingSongId = null;
-    this.init();
+    // Small delay to ensure supabase is initialized
+    setTimeout(() => this.init(), 100);
   }
 
-  init() {
+  async init() {
+    // Check if supabase is available
+    if (typeof supabase === "undefined" || !supabase) {
+      console.error("Supabase client not initialized");
+      this.showMessage("Database connection failed", "error");
+      return;
+    }
+    console.log("Supabase client ready:", supabase);
+
     this.bindEvents();
-    this.checkEditMode();
+    await this.checkEditMode();
   }
 
   bindEvents() {

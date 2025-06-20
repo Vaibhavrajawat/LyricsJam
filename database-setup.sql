@@ -11,21 +11,30 @@ CREATE TABLE IF NOT EXISTS songs (
 -- Enable Row Level Security
 ALTER TABLE songs ENABLE ROW LEVEL SECURITY;
 
--- Allow anyone to view songs
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Anyone can view songs" ON songs;
+DROP POLICY IF EXISTS "Anyone can insert songs" ON songs;
+DROP POLICY IF EXISTS "Anyone can update songs" ON songs;
+DROP POLICY IF EXISTS "Anyone can delete songs" ON songs;
+
+-- Create new policies
 CREATE POLICY "Anyone can view songs" ON songs
   FOR SELECT USING (true);
 
--- Allow anyone to insert songs  
 CREATE POLICY "Anyone can insert songs" ON songs
   FOR INSERT WITH CHECK (true);
 
--- Allow anyone to update songs
 CREATE POLICY "Anyone can update songs" ON songs
   FOR UPDATE USING (true);
 
--- Allow anyone to delete songs
 CREATE POLICY "Anyone can delete songs" ON songs
   FOR DELETE USING (true);
 
--- Enable realtime for the songs table
-ALTER PUBLICATION supabase_realtime ADD TABLE songs; 
+-- Enable realtime for the songs table (ignore errors if already added)
+DO $$ 
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE songs;
+EXCEPTION
+  WHEN duplicate_object THEN 
+    NULL;
+END $$; 

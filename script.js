@@ -3,10 +3,19 @@ class SongManager {
   constructor() {
     this.songs = [];
     this.filteredSongs = [];
-    this.init();
+    // Small delay to ensure supabase is initialized
+    setTimeout(() => this.init(), 100);
   }
 
   async init() {
+    // Check if supabase is available
+    if (typeof supabase === "undefined" || !supabase) {
+      console.error("Supabase client not initialized");
+      this.showError("Database connection failed");
+      return;
+    }
+    console.log("Supabase client ready:", supabase);
+
     await this.loadSongs();
     this.bindEvents();
     this.setupRealtime();

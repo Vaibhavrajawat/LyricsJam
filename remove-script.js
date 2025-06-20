@@ -5,7 +5,8 @@ class RemoveSongsManager {
     this.filteredSongs = [];
     this.selectedSongs = new Set();
     this.currentDeletingSongs = [];
-    this.init();
+    // Small delay to ensure supabase is initialized
+    setTimeout(() => this.init(), 100);
   }
 
   async init() {
