@@ -1,3 +1,30 @@
+/* Force dark theme and prevent light mode overrides */
+html {
+  color-scheme: dark;
+  background: #0f0f23 !important;
+}
+
+body {
+  background: linear-gradient(
+    135deg,
+    #0f0f23 0%,
+    #1a1a2e 50%,
+    #16213e 100%
+  ) !important;
+  color: #e2e8f0 !important;
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent iOS zoom on form inputs */
+input,
+textarea,
+select {
+  font-size: 16px !important;
+}
+
 :root {
   --primary-color: #8b5cf6;
   --primary-light: #a78bfa;
@@ -58,10 +85,7 @@
 
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg-gradient);
-  color: var(--text-primary);
   line-height: 1.6;
-  min-height: 100vh;
   position: relative;
 }
 
