@@ -8,6 +8,14 @@ CREATE TABLE IF NOT EXISTS songs (
   album TEXT
 );
 
+-- Add album column if it doesn't exist
+DO $$ 
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='songs' AND column_name='album') THEN
+    ALTER TABLE songs ADD COLUMN album TEXT;
+  END IF;
+END $$;
+
 -- Enable Row Level Security
 ALTER TABLE songs ENABLE ROW LEVEL SECURITY;
 

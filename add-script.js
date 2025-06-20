@@ -102,9 +102,15 @@ class AddSongManager {
     const songData = {
       title: formData.get("title").trim(),
       artist: formData.get("artist").trim(),
+      lyrics: formData.get("lyrics").trim() || "No lyrics available",
       album: formData.get("album").trim() || null,
-      lyrics: formData.get("lyrics").trim(),
     };
+
+    // Validate required fields
+    if (!songData.title || !songData.artist) {
+      this.showMessage("Title and Artist are required", "error");
+      return;
+    }
 
     if (this.isEditing) {
       await this.updateSong(songData);
