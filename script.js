@@ -1,8 +1,4 @@
-// Initialize Supabase Client
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+// Main song display and management
 class SongManager {
   constructor() {
     this.songs = [];
@@ -67,7 +63,7 @@ class SongManager {
 
       if (error) throw error;
 
-      this.songs = data;
+      this.songs = data || [];
       this.filteredSongs = [...this.songs];
       this.renderSongs();
       this.updateSongCount();

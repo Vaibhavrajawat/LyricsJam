@@ -1,14 +1,8 @@
-// Initialize Supabase Client
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 // Add/Edit Song Form Management
 class AddSongManager {
   constructor() {
     this.isEditing = false;
     this.editingSongId = null;
-    this.songs = this.loadSongs();
     this.init();
   }
 
@@ -21,7 +15,6 @@ class AddSongManager {
     const form = document.getElementById("songForm");
     const autoFetchBtn = document.getElementById("autoFetchBtn");
     const clearFormBtn = document.getElementById("clearFormBtn");
-    const cancelBtn = document.getElementById("cancelBtn");
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -34,10 +27,6 @@ class AddSongManager {
 
     clearFormBtn.addEventListener("click", () => {
       this.clearForm();
-    });
-
-    cancelBtn.addEventListener("click", () => {
-      window.location.href = "/";
     });
 
     // Real-time validation
@@ -53,36 +42,46 @@ class AddSongManager {
     });
   }
 
-  checkEditMode() {
+  async checkEditMode() {
     const urlParams = new URLSearchParams(window.location.search);
     const editId = urlParams.get("edit");
 
     if (editId) {
-      this.loadSongForEdit(editId);
+      await this.loadSongForEdit(editId);
     }
   }
 
-  loadSongForEdit(songId) {
-    const song = this.songs.find((s) => s.id === songId);
+  async loadSongForEdit(songId) {
+    try {
+      const { data: song, error } = await supabase
+        .from("songs")
+        .select("*")
+        .eq("id", songId)
+        .single();
 
-    if (!song) {
-      this.showMessage("Song not found", "error");
+      if (error || !song) {
+        this.showMessage("Song not found", "error");
+        window.location.href = "index.html";
+        return;
+      }
+
+      this.isEditing = true;
+      this.editingSongId = songId;
+
+      // Update form title
+      document.getElementById("formTitle").textContent = "Edit Song";
+      document.getElementById("submitText").textContent = "Update Song";
+
+      // Populate form
+      document.getElementById("songTitle").value = song.title;
+      document.getElementById("artistName").value = song.artist;
+      document.getElementById("albumName").value = song.album || "";
+      document.getElementById("songLyrics").value = song.lyrics;
+    } catch (error) {
+      console.error("Error loading song for edit:", error);
+      this.showMessage("Error loading song", "error");
       window.location.href = "index.html";
-      return;
     }
-
-    this.isEditing = true;
-    this.editingSongId = songId;
-
-    // Update form title
-    document.getElementById("formTitle").textContent = "Edit Song";
-    document.getElementById("submitText").textContent = "Update Song";
-
-    // Populate form
-    document.getElementById("songTitle").value = song.title;
-    document.getElementById("artistName").value = song.artist;
-    document.getElementById("albumName").value = song.album || "";
-    document.getElementById("songLyrics").value = song.lyrics;
   }
 
   async handleSubmit() {
@@ -96,66 +95,61 @@ class AddSongManager {
       artist: formData.get("artist").trim(),
       album: formData.get("album").trim() || null,
       lyrics: formData.get("lyrics").trim(),
-      created_at: new Date().toISOString(),
     };
 
     if (this.isEditing) {
-      this.updateSong(songData);
+      await this.updateSong(songData);
     } else {
-      this.addSong(songData);
+      await this.addSong(songData);
     }
   }
 
-  addSong(songData) {
+  async addSong(songData) {
     this.showLoading(true);
 
-    supabase
-      .from("songs")
-      .insert([songData])
-      .select()
-      .single()
-      .then(({ data, error }) => {
-        if (error) {
-          console.error("Error adding song:", error);
-          this.showMessage("Failed to add song. Please try again.", "error");
-        } else {
-          this.showMessage("Song added successfully!", "success");
-          this.clearForm();
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
-        }
-      })
-      .catch((error) => {
-        console.error("Error adding song:", error);
-        this.showMessage("Failed to add song. Please try again.", "error");
-      })
-      .finally(() => {
-        this.showLoading(false);
-      });
+    try {
+      const { data, error } = await supabase
+        .from("songs")
+        .insert([songData])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      this.showMessage("Song added successfully!", "success");
+      this.clearForm();
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    } catch (error) {
+      console.error("Error adding song:", error);
+      this.showMessage("Failed to add song. Please try again.", "error");
+    } finally {
+      this.showLoading(false);
+    }
   }
 
-  updateSong(songData) {
-    const songIndex = this.songs.findIndex((s) => s.id === this.editingSongId);
+  async updateSong(songData) {
+    this.showLoading(true);
 
-    if (songIndex === -1) {
-      this.showMessage("Error updating song", "error");
-      return;
+    try {
+      const { error } = await supabase
+        .from("songs")
+        .update(songData)
+        .eq("id", this.editingSongId);
+
+      if (error) throw error;
+
+      this.showMessage("Song updated successfully!", "success");
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    } catch (error) {
+      console.error("Error updating song:", error);
+      this.showMessage("Failed to update song. Please try again.", "error");
+    } finally {
+      this.showLoading(false);
     }
-
-    this.songs[songIndex] = {
-      ...this.songs[songIndex],
-      ...songData,
-      updatedAt: new Date().toISOString(),
-    };
-
-    this.saveSongs();
-
-    this.showMessage("Song updated successfully!", "success");
-
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 1500);
   }
 
   async autoFetchLyrics() {
@@ -352,32 +346,6 @@ class AddSongManager {
     container.className = "message-container";
     document.body.appendChild(container);
     return container;
-  }
-
-  loadSongs() {
-    const stored = localStorage.getItem("jamlyrics-songs");
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch (e) {
-        console.error("Error loading songs from localStorage:", e);
-        return [];
-      }
-    }
-    return [];
-  }
-
-  saveSongs() {
-    try {
-      localStorage.setItem("jamlyrics-songs", JSON.stringify(this.songs));
-    } catch (e) {
-      console.error("Error saving songs to localStorage:", e);
-      this.showMessage("Error saving songs", "error");
-    }
-  }
-
-  generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
 }
 

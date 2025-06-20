@@ -1,14 +1,10 @@
-// Initialize Supabase Client
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+// Remove songs management
 class RemoveSongsManager {
   constructor() {
     this.songs = [];
     this.filteredSongs = [];
     this.selectedSongs = new Set();
-    this.currentDeletingSong = null;
+    this.currentDeletingSongs = [];
     this.init();
   }
 
@@ -101,7 +97,7 @@ class RemoveSongsManager {
 
       if (error) throw error;
 
-      this.songs = data;
+      this.songs = data || [];
       this.filteredSongs = [...this.songs];
       this.renderSongs();
       this.updateDisplay();
@@ -196,7 +192,7 @@ class RemoveSongsManager {
     // Checkbox events
     document.querySelectorAll(".song-checkbox").forEach((checkbox) => {
       checkbox.addEventListener("change", (e) => {
-        const songId = parseInt(e.target.id.replace("song-", ""));
+        const songId = e.target.id.replace("song-", "");
         this.toggleSongSelection(songId);
       });
     });
@@ -205,7 +201,7 @@ class RemoveSongsManager {
     document.querySelectorAll(".delete-single-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
-        const songId = parseInt(btn.dataset.songId);
+        const songId = btn.dataset.songId;
         this.deleteSingleSong(songId);
       });
     });
@@ -252,14 +248,18 @@ class RemoveSongsManager {
     const song = this.songs.find((s) => s.id === songId);
     if (!song) return;
 
-    this.currentDeletingSong = [songId];
+    this.currentDeletingSongs = [song];
     this.showConfirmModal(`"${song.title}" by ${song.artist}`, 1);
   }
 
   deleteSelected() {
     if (this.selectedSongs.size === 0) return;
 
-    this.currentDeletingSong = Array.from(this.selectedSongs);
+    // Map selected IDs to actual song objects
+    this.currentDeletingSongs = this.songs.filter((song) =>
+      this.selectedSongs.has(song.id)
+    );
+
     const count = this.selectedSongs.size;
     const songText = count === 1 ? `${count} song` : `${count} songs`;
 
@@ -285,41 +285,40 @@ class RemoveSongsManager {
     const modal = document.getElementById("confirmModal");
     modal.classList.remove("active");
     document.body.style.overflow = "";
-    this.currentDeletingSong = null;
+    this.currentDeletingSongs = [];
   }
 
   async executeDelete() {
-    if (!this.currentDeletingSong) return;
-
     this.showLoading(true);
+    this.closeConfirmModal();
 
     try {
       const { error } = await supabase
         .from("songs")
         .delete()
-        .in("id", this.currentDeletingSong);
+        .in(
+          "id",
+          this.currentDeletingSongs.map((song) => song.id)
+        );
 
       if (error) throw error;
 
-      const deletedCount = this.currentDeletingSong.length;
-      const songText = deletedCount === 1 ? "song" : "songs";
+      const count = this.currentDeletingSongs.length;
       this.showMessage(
-        `${deletedCount} ${songText} deleted successfully`,
+        `Successfully deleted ${count} song${count !== 1 ? "s" : ""}`,
         "success"
       );
 
-      // Clear selections
-      this.currentDeletingSong.forEach((id) => this.selectedSongs.delete(id));
-
-      // Reload songs
+      // Clear selections and reload
+      this.selectedSongs.clear();
       await this.loadSongs();
-      this.filterSongs(document.getElementById("adminSearchInput").value);
+      this.updateDisplay();
     } catch (error) {
       console.error("Error deleting songs:", error);
-      this.showMessage("Failed to delete songs", "error");
+      this.showMessage("Failed to delete songs. Please try again.", "error");
     } finally {
       this.showLoading(false);
-      this.closeConfirmModal();
+      this.currentDeletingSongs = [];
     }
   }
 
