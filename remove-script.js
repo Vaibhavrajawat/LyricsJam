@@ -291,6 +291,16 @@ class RemoveSongsManager {
   async executeDelete() {
     console.log("Execute delete called with songs:", this.currentDeletingSongs);
 
+    // Check if supabase is initialized
+    if (!window.supabase) {
+      console.error("Supabase client not initialized!");
+      this.showMessage(
+        "Database connection error. Please refresh the page.",
+        "error"
+      );
+      return;
+    }
+
     this.showLoading(true);
 
     // Store count and IDs before any async operations
@@ -308,21 +318,36 @@ class RemoveSongsManager {
     }
 
     try {
-      const { error, data } = await supabase
+      console.log("Starting delete operation...");
+
+      const { error, data, count } = await supabase
         .from("songs")
         .delete()
-        .in("id", songIds);
+        .in("id", songIds)
+        .select(); // Add select to get deleted rows
 
-      if (error) throw error;
+      console.log("Delete response:", { error, data, count });
 
-      console.log("Delete successful, affected rows:", data);
+      if (error) {
+        console.error("Supabase delete error:", error);
+        throw error;
+      }
 
-      this.showMessage(
-        `Successfully deleted ${deleteCount} song${
-          deleteCount !== 1 ? "s" : ""
-        }`,
-        "success"
-      );
+      // Check if any rows were actually deleted
+      const actuallyDeleted = data ? data.length : 0;
+      console.log(`Actually deleted ${actuallyDeleted} rows`);
+
+      if (actuallyDeleted === 0) {
+        console.warn("No rows were deleted - possible permission issue");
+        this.showMessage("Could not delete songs. Check permissions.", "error");
+      } else {
+        this.showMessage(
+          `Successfully deleted ${actuallyDeleted} song${
+            actuallyDeleted !== 1 ? "s" : ""
+          }`,
+          "success"
+        );
+      }
 
       // Clear selections and reload
       this.selectedSongs.clear();
@@ -330,7 +355,8 @@ class RemoveSongsManager {
       this.updateDisplay();
     } catch (error) {
       console.error("Error deleting songs:", error);
-      this.showMessage("Failed to delete songs. Please try again.", "error");
+      console.error("Error details:", error.message, error.details, error.hint);
+      this.showMessage(`Failed to delete songs: ${error.message}`, "error");
     } finally {
       this.showLoading(false);
       this.currentDeletingSongs = [];
