@@ -196,7 +196,7 @@ class SongManager {
         <i class="fas fa-music"></i>
         <h3>No songs available</h3>
         <p>Songs will appear here when they're added by the organizer</p>
-        <a href="add.html" class="btn btn-primary">Add Songs</a>
+        <a href="admin.html" class="btn btn-primary">Go to Admin</a>
       </div>
     `;
   }

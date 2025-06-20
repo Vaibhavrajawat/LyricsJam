@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - JamLyrics</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">
+            <i class="fas fa-music"></i>
+            <h1>JamLyrics Admin</h1>
+          </a>
+        </div>
+        <nav class="nav">
+          <a href="index.html" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> Back to Songs
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <div class="admin-section">
+          <div class="admin-header">
+            <h2>Song Management</h2>
+            <p>Add new songs or manage existing ones</p>
+          </div>
+
+          <div class="admin-grid">
+            <div class="admin-card">
+              <div class="admin-card-icon">
+                <i class="fas fa-plus"></i>
+              </div>
+              <h3>Add New Song</h3>
+              <p>Add songs with lyrics for jam sessions</p>
+              <a href="add.html" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Song
+              </a>
+            </div>
+
+            <div class="admin-card">
+              <div class="admin-card-icon">
+                <i class="fas fa-trash"></i>
+              </div>
+              <h3>Manage Songs</h3>
+              <p>Remove or edit existing songs</p>
+              <a href="remove.html" class="btn btn-secondary">
+                <i class="fas fa-cog"></i> Manage Songs
+              </a>
+            </div>
+
+            <div class="admin-card">
+              <div class="admin-card-icon">
+                <i class="fas fa-chart-bar"></i>
+              </div>
+              <h3>Statistics</h3>
+              <p id="statsText">Loading...</p>
+              <button class="btn btn-outline" onclick="loadStats()">
+                <i class="fas fa-refresh"></i> Refresh Stats
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script>
+      // Load statistics
+      async function loadStats() {
+        try {
+          if (typeof supabase !== "undefined" && supabase) {
+            const { data, error } = await supabase
+              .from("songs")
+              .select("*", { count: "exact" });
+
+            if (error) throw error;
+
+            const count = data ? data.length : 0;
+            document.getElementById("statsText").textContent = `${count} song${
+              count !== 1 ? "s" : ""
+            } in database`;
+          } else {
+            document.getElementById("statsText").textContent =
+              "Database unavailable";
+          }
+        } catch (error) {
+          console.error("Error loading stats:", error);
+          document.getElementById("statsText").textContent =
+            "Error loading stats";
+        }
+      }
+
+      // Load stats when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(loadStats, 200);
+      });
+    </script>
+  </body>
+</html>
